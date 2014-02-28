@@ -18,6 +18,7 @@ import eu.interedition.text.stream.XMLElementContextFilter;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,29 +36,26 @@ public class Transcript extends FileBasedTextStream {
     public Transcript(List<File> sources, long lastModified, ObjectMapper objectMapper, NamespaceMapping namespaceMapping) {
         super(sources, lastModified, objectMapper, namespaceMapping);
 
-        this.segmentStart = Predicates.or(
+        this.segmentStart = Predicates.or(Arrays.asList(
                 xmlName(namespaceMapping, new QName(TEI_NS_URI, "l")),
                 xmlName(namespaceMapping, new QName(TEI_NS_URI, "line")),
                 xmlName(namespaceMapping, new QName(TEI_NS_URI, "p")),
                 xmlName(namespaceMapping, new QName(TEI_NS_URI, "ab")),
                 xmlName(namespaceMapping, new QName(TEI_SIG_GE_URI, "line"))
-        );
+        ));
     }
 
     protected Iterator<TextToken> configure(Iterator<TextToken> tokens, Iterator<String> ids) {
         tokens = Iterators.filter(tokens, new XMLElementContextFilter(
-                Predicates.<TextToken>or(
+                Predicates.or(Arrays.asList(
                         xmlName(namespaceMapping, "tei:teiHeader"),
                         xmlName(namespaceMapping, "tei:front"),
                         xmlName(namespaceMapping, "tei:app")
-                ),
-                Predicates.<TextToken>or(
-                        xmlName(namespaceMapping, "tei:lem")
-                )
-
+                )),
+                xmlName(namespaceMapping, "tei:lem")
         ));
 
-        tokens = new WhitespaceCompressor(tokens, namespaceMapping, Predicates.<TextToken>or(
+        tokens = new WhitespaceCompressor(tokens, namespaceMapping, Predicates.or(Arrays.asList(
                 xmlName(namespaceMapping, "tei:TEI"),
                 xmlName(namespaceMapping, "tei:body"),
                 xmlName(namespaceMapping, "tei:group"),
@@ -71,9 +69,9 @@ public class Transcript extends FileBasedTextStream {
                 xmlName(namespaceMapping, "tei:zone"),
                 xmlName(namespaceMapping, "ge:document"),
                 xmlName(namespaceMapping, "f:overw")
-        ));
+        )));
 
-        tokens = new LineBreaker(tokens, Predicates.<TextToken>or(
+        tokens = new LineBreaker(tokens, Predicates.or(Arrays.asList(
                 xmlName(namespaceMapping, "tei:text"),
                 xmlName(namespaceMapping, "tei:div"),
                 xmlName(namespaceMapping, "tei:head"),
@@ -86,7 +84,7 @@ public class Transcript extends FileBasedTextStream {
                 xmlName(namespaceMapping, "tei:ab"),
                 xmlName(namespaceMapping, "tei:line"),
                 xmlName(namespaceMapping, "ge:line")
-        ));
+        )));
 
         tokens = new TEIMilestoneMarkupProcessor(tokens, objectMapper, namespaceMapping).withIds(ids);
 
