@@ -227,7 +227,7 @@ YUI.add('legacy-text-annotation', function (Y) {
                         case "txt:segment":
                             break;
                         case "xml:path":
-                            data["xml:node"] = v.join("/")
+                            data["xml:node"] = v.join("/");
                             break;
                         default:
                             data[ns && k.indexOf(ns) === 0 ? k.substring(ns.length ) : k] = v;
@@ -242,7 +242,7 @@ YUI.add('legacy-text-annotation', function (Y) {
             legacyText.localNameIndex = {};
             legacyText.annotations = [];
 
-            Y.Object.each(text.annotations, function (a) {
+            Y.Array.each(text.annotations, function (a) {
                 if (!a["xml:name"]) return;
 
                 var segment = a["txt:segment"],

@@ -83,7 +83,15 @@
             textualTranscript = Y.Faust.TextSchema.parse([@json textualTranscript=textualTranscript /]),
             collation = new Y.Faust.Collation([@json collation=collation /]);
 
-        legacyText = Y.Faust.Legacy.Text.adopt(documentaryTranscript);
+        //legacyText = Y.Faust.Legacy.Text.adopt(documentaryTranscript);
+
+        documentary = documentaryTranscript;
+
+        pages = Y.Array.filter(documentaryTranscript.annotations, function(a) { return a["xml:name"] == "tei:TEI"; });
+        pages = Y.Array.map(pages, function(p) {
+            var ps = p["txt:segment"], pageTranslation = Y.Faust.translateSegments(ps);
+            return new Y.Faust.Text(documentaryTranscript.content(ps), Y.Array.map(documentaryTranscript.index().find(ps), pageTranslation));
+        });
 
         new Y.Faust.IOStatus({ render: true });
         new Y.Faust.DocumentTree({ container: ".document-structure", collapseAll: true }).render();
