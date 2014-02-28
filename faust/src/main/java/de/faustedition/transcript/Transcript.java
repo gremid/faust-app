@@ -73,10 +73,6 @@ public class Transcript extends FileBasedTextStream {
                 xmlName(namespaceMapping, "f:overw")
         ));
 
-        tokens = new TEIMilestoneMarkupProcessor(tokens, objectMapper, namespaceMapping).withIds(ids);
-
-        tokens = new TranscriptMarkupHandler(tokens, objectMapper, namespaceMapping).withIds(ids);
-
         tokens = new LineBreaker(tokens, Predicates.<TextToken>or(
                 xmlName(namespaceMapping, "tei:text"),
                 xmlName(namespaceMapping, "tei:div"),
@@ -91,6 +87,10 @@ public class Transcript extends FileBasedTextStream {
                 xmlName(namespaceMapping, "tei:line"),
                 xmlName(namespaceMapping, "ge:line")
         ));
+
+        tokens = new TEIMilestoneMarkupProcessor(tokens, objectMapper, namespaceMapping).withIds(ids);
+
+        tokens = new TranscriptMarkupHandler(tokens, objectMapper, namespaceMapping).withIds(ids);
 
         return tokens;
     }
